@@ -1,0 +1,39 @@
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: rgb(34, 34, 34);
+    background-repeat: repeat;
+    background-size: 400px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.2em;
+}
+
+div {
+    color: white;
+}
+
+#record-button-div {
+    width: 100%;
+    height: 80px;
+    display: flex;    
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+#record-button {
+    height: 40px;
+    width: 200px;
+}
+
+#text-div {
+width: 100%;
+padding-inline: 100px;
+}
+
+#text-span {
+ color: white;
+}

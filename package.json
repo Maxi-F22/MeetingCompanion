@@ -20,6 +20,8 @@
   "homepage": "https://github.com/Maxi-F22/MeetingCompanion#readme",
   "dependencies": {
     "@huggingface/inference": "^2.8.1",
-    "dotenv": "^16.4.7"
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
   }
 }

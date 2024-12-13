@@ -23,13 +23,10 @@ app.post('/upload', async (req, res) => {
     try {
         const audioBuffer = req.body; // Der Audio-Blob als Buffer
         console.log('Audio-Daten empfangen:', audioBuffer);
-
-        // Beispiel: Hier kannst du den Buffer direkt verarbeiten
-        // Zum Beispiel: Sende die Daten an einen anderen Service oder führe eine Analyse durch
         console.log(`Audio-Datenlänge: ${audioBuffer.length} Bytes`);
 
-        // var transcription = await transcribeRecording(audioBuffer);
-        var transcription = await summarizeRecording("audioBuffer");
+        // Sende Audio an Transkriptions Funktion
+        var transcription = await transcribeRecording(audioBuffer);
 
         // Bestätigung an den Client senden
         res.send(transcription);
@@ -44,34 +41,34 @@ app.listen(port, () => {
     console.log(`Server läuft auf http://localhost:${port}`);
 });
 
-
-
 // ############################# Hugging Face Code ################################
 
 // Set some constants
 const inference = new HfInference(process.env.HF_ACCESS_TOKEN); // inference library loads access token from the .env file
 const sumModel = 'knkarthick/MEETING_SUMMARY';
-const speechRecogModel = 'facebook/wav2vec2-large-960h-lv60-self';
+const speechRecogModel = 'openai/whisper-large-v3-turbo';
 
 async function transcribeRecording(audio) {
+    try {
+        const results = await inference.automaticSpeechRecognition({
+            model: speechRecogModel,
+            data: audio // ArrayBuffer anstelle von Buffer übergeben
+        });
+        
+        console.log('Transkriptions-Ergebnisse:', results.text);
 
-    const results = await inference.automaticSpeechRecognition({
-        model: speechRecogModel, 
-        data: audio
-    })
-    // Output model's response
-    console.log(results);
-    return results;
-}
+        // var test_text = "Hi! Hello How are you today? I'm very good thank you. Should we start? Yes. We have to design the new Remote. Yes how about we add Buttons, Noam? Oh yes Marcel that is a very good idea. What do you think Maxi? I think its awesome. I am going to bring sausages to saturdays party. Oh yes thank you."
 
-async function summarizeRecording(sumtext) {
-    var test_text = "Hi! Hello How are you today? I'm very good thank you. Should we start? Yes. We have to design the new Remote. Yes how about we add Buttons, Noam? Oh yes Marcel that is a very good idea. What do you think Maxi? I think its awesome. I am going to bring sausages to saturdays party. Oh yes thank you."
-
-    const results = await inference.summarization({
-        model: sumModel, 
-        inputs: test_text
-    })
-    // Output model's response
-    console.log(results);
-    return results;
+        const sum_results = await inference.summarization({
+            model: sumModel, 
+            inputs: results.text
+        });
+        
+        console.log('Summarization-Ergebnisse:', sum_results.summary_text);
+        
+        return sum_results.summary_text;
+    } catch (error) {
+        console.error('Fehler bei der Transkription:', error);
+        throw new Error('Transkription fehlgeschlagen');
+    }
 }

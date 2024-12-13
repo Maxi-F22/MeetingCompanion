@@ -13,6 +13,7 @@ var stream = null;
 
 async function startRecording() {
     if (!isRecording) {
+        text.innerHTML = "Recording...";
         stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
         const audioChunks = [];
@@ -27,6 +28,7 @@ async function startRecording() {
         console.log("Recording started...");
     }
     else {
+        text.innerHTML = "";
         mediaRecorder.stop();
         isRecording = false;
         console.log("Recording stopped...");

@@ -1,6 +1,6 @@
 // ############################### Code ###############################
 
-var button = document.getElementById("record-button");
+var button = document.getElementsByClassName("record-button")[0];
 button?.addEventListener("click", startRecording);
 
 var text = document.getElementById("text-span");
@@ -45,7 +45,7 @@ async function startRecording() {
 async function sendAudioToServer(audioBlob) {
     try {
         loader.style.display = "flex";
-        const response = await fetch('http://localhost:3000/upload', {
+        const response = await fetch('http://localhost:3000/uploadaudio', {
             method: 'POST',
             headers: {
                 'Content-Type': 'audio/webm' // Mime Type of Audioblob
@@ -55,9 +55,11 @@ async function sendAudioToServer(audioBlob) {
 
         if (response.ok) {
             loader.style.display = "none";
-            const result = await response.text();
-            text.innerHTML = result;
-            // imgDiv.innerHTML = `<img src=".public/temp/icons/test.png"></img>`;
+            var result = await response.text();
+            text.innerHTML += result;
+            // added new Button via Server, add EventListener to that Button
+            var transcriptbutton = document.getElementsByClassName("record-button")[1];
+            transcriptbutton?.addEventListener("click", sendTranscriptToServer);
         } else {
             loader.style.display = "none";
             console.error('Fehler beim Senden des Audios:', response.statusText);
@@ -67,3 +69,33 @@ async function sendAudioToServer(audioBlob) {
         console.error('Fehler beim Senden der Anfrage:', error);
     }
 }
+
+async function sendTranscriptToServer() {
+    try {
+        loader.style.display = "flex";
+        var transcript = document.getElementById("transcript-text")?.innerHTML;
+
+        console.log(transcript);
+        const response = await fetch('http://localhost:3000/uploadtranscript', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/html'
+            },
+            body: transcript
+        });
+
+        if (response.ok) {
+            loader.style.display = "none";
+
+            var result = await response.text();
+            text.innerHTML += result;
+        } else {
+            loader.style.display = "none";
+            console.error('Fehler beim Senden der Anfrage:', response.statusText);
+        }
+    } catch (error) {
+        loader.style.display = "none";
+        console.error('Fehler beim Senden der Anfrage:', error);
+    }
+}
+

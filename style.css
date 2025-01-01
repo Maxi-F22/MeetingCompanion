@@ -15,7 +15,7 @@ div {
     color: white;
 }
 
-#record-button-div {
+.record-button-div {
     width: 100%;
     height: 80px;
     display: flex;    
@@ -24,7 +24,7 @@ div {
     align-items: center;
 }
 
-#record-button {
+.record-button {
     height: 40px;
     width: 200px;
 }
@@ -35,6 +35,21 @@ div {
 
 #text-span {
     color: white;
+}
+
+#text-span .summary-text {
+    display: block;
+    padding-left: 120px;
+}
+
+#text-span .headline {
+    text-transform: capitalize;
+}
+
+#text-span .icon {
+    position: relative;
+    max-width: 100px;
+    top: -70px;
 }
 
 #loader-div {

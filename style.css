@@ -43,6 +43,10 @@ div {
     justify-content: center;
 }
 
+#img-div img {
+    max-width: 100px;
+}
+
 .loader {
     border: 10px solid #f3f3f3; /* Light grey */
     border-top: 10px solid #3498db; /* Blue */

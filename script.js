@@ -5,6 +5,8 @@ button?.addEventListener("click", startRecording);
 
 var text = document.getElementById("text-span");
 
+var imgDiv = document.getElementById("img-div");
+
 var loader = document.getElementById("loader-div");
 
 var isRecording = false;
@@ -21,7 +23,7 @@ async function startRecording() {
         mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
         mediaRecorder.onstop = async () => {
             const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-            sendAudioToServer(audioBlob); // Sende den AudioBlob an den Server
+            sendAudioToServer(audioBlob);
         };
         mediaRecorder.start();
         isRecording = true;
@@ -33,21 +35,20 @@ async function startRecording() {
         isRecording = false;
         console.log("Recording stopped...");
 
-        // Beende den Zugriff auf das Mikrofon
+        // End Microphone Access
         if (stream) {
             stream.getTracks().forEach((track) => track.stop());
         }
     }
 }
 
-// Funktion zum Senden des AudioBlobs an den Server
 async function sendAudioToServer(audioBlob) {
     try {
         loader.style.display = "flex";
         const response = await fetch('http://localhost:3000/upload', {
             method: 'POST',
             headers: {
-                'Content-Type': 'audio/webm' // Der MIME-Typ des AudioBlobs
+                'Content-Type': 'audio/webm' // Mime Type of Audioblob
             },
             body: audioBlob
         });
@@ -56,6 +57,7 @@ async function sendAudioToServer(audioBlob) {
             loader.style.display = "none";
             const result = await response.text();
             text.innerHTML = result;
+            // imgDiv.innerHTML = `<img src=".public/temp/icons/test.png"></img>`;
         } else {
             loader.style.display = "none";
             console.error('Fehler beim Senden des Audios:', response.statusText);
